@@ -3,7 +3,37 @@ guid: 830be8a80be52344a941bfd9ef7c3094
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BuildingGlass
+    second: {fileID: 2100000, guid: 94f95c8e5e91a8e4ba54126c7ea219b2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BuildingMetal
+    second: {fileID: 2100000, guid: d9b3a538a69e4144d9c7df582bab1812, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BuildingWhite
+    second: {fileID: 2100000, guid: 75b24a983ad2ed54a926433fe6161a2c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: OilDrums
+    second: {fileID: 2100000, guid: 7bbff1588ba9bc44a8e291e896b99f71, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: YellowBright
+    second: {fileID: 2100000, guid: d1190be6c64f4924cbe6094c42e13f3a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: YellowMid
+    second: {fileID: 2100000, guid: 375b02409a520c848ae2e10de1499ace, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

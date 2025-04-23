@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
+using UnityEngine.VFX;
 
 namespace Tanks.Complete
 {
@@ -25,6 +26,8 @@ namespace Tanks.Complete
         public bool m_IsComputerControlled = false; // Is this tank player or computer controlled
         [HideInInspector]
         public TankInputUser m_InputUser;            // The Input User component for that tanks. Contains the Input Actions.
+
+        public VisualEffect m_SmokeTrailVFX;
         
         public Rigidbody Rigidbody => m_Rigidbody;
         
@@ -61,6 +64,7 @@ namespace Tanks.Complete
             m_MovementInputValue = 0f;
             m_TurnInputValue = 0f;
 
+            m_SmokeTrailVFX.Play();
         }
 
 
@@ -68,6 +72,7 @@ namespace Tanks.Complete
         {
             // When the tank is turned off, set it to kinematic so it stops moving.
             m_Rigidbody.isKinematic = true;
+            m_SmokeTrailVFX.Stop();
         }
 
 
@@ -210,7 +215,7 @@ namespace Tanks.Complete
                 // in normal "tank control" the speed value is how much we press "up/forward"
                 speedInput = m_MovementInputValue;
             }
-            
+
             // Create a vector in the direction the tank is facing with a magnitude based on the input, speed and the time between frames.
             Vector3 movement = transform.forward * speedInput * m_Speed * Time.deltaTime;
 
