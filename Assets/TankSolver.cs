@@ -8,19 +8,41 @@ public class TankSolver : MonoBehaviour
     private float _solveTime = 1.0f;
 
     [SerializeField]
-    private Material _mat;
+    private GameObject[] _go;
 
-    private int _solveAmount = Shader.PropertyToID("_DissolveAmount");
-    private int _spiralSolveAmount = Shader.PropertyToID("_SpiralForce");
-
+    private List<Material> _mat = new List<Material>();
 
     void Start()
     {
-        
+        foreach (var go in _go)
+        {
+
+            Material[] _newMats = go.GetComponent<Renderer>().materials;
+            foreach (var mat in _newMats)
+            {
+                _mat.Add(mat);
+                mat.SetFloat("_DisolveAmount", 1);
+            }
+        }
+
+        StartCoroutine(Solve());
     }
 
-    void Update()
+    private IEnumerator Solve()
     {
-        
+        float elapsedTime = 0f;
+
+        while(elapsedTime < _solveTime)
+        {
+            elapsedTime += Time.deltaTime;
+            float lerpDissolve = Mathf.Lerp(1.1f, 0f,(elapsedTime / _solveTime));
+
+            for (int i = 0; i < _mat.Count; i++)
+            {
+                _mat[i].SetFloat("_DisolveAmount", lerpDissolve);
+            }
+
+            yield return null;
+        }
     }
 }
