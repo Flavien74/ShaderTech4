@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.VisualScripting;
+using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.VFX;
@@ -11,6 +12,7 @@ namespace Tanks.Complete
         public Transform m_FireTransform;           // A child of the tank where the shells are spawned.
         public Transform m_FireVFX;           // A child of the tank where the sparkles are spawned.
         public Slider m_AimSlider;                  // A child of the tank that displays the current launch force.
+        public Material m_ArrowMaterial;
         public AudioSource m_ShootingAudio;         // Reference to the audio source used to play the shooting audio. NB: different to the movement audio source.
         public AudioClip m_ChargingClip;            // Audio that plays when each shot is charging up.
         public AudioClip m_FireClip;                // Audio that plays when each shot is fired.
@@ -193,6 +195,8 @@ namespace Tanks.Complete
                 // ... launch the shell.
                 Fire ();
             }
+
+            m_ArrowMaterial.SetFloat("_Value", Mathf.InverseLerp(m_BaseMinLaunchForce, m_MaxLaunchForce, m_AimSlider.value));
         }
 
 
