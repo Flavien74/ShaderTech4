@@ -40,6 +40,29 @@ public class TankSolver : MonoBehaviour
             }
         }
 
+        foreach (var go in _coloredElements)
+        {
+            if (go == null) continue;
+
+            Renderer _rend = go.GetComponent<Renderer>();
+            if (_rend == null) continue;
+
+            int matCount = _rend.materials.Length;
+            Material[] newMats = new Material[matCount];
+
+            for (int i = 0; i < matCount; i++)
+            {
+                newMats[i] = _baseMaterial;
+            }
+
+            _rend.materials = newMats;
+
+            foreach (var mat in newMats)
+            {
+                StartCoroutine(Blink(mat));
+            }
+        }
+
         StartCoroutine(Solve());
     }
     private void HandlePlayerHit(GameObject player)
