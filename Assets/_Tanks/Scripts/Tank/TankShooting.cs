@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.VFX;
 
 namespace Tanks.Complete
 {
@@ -8,6 +9,7 @@ namespace Tanks.Complete
     {
         public Rigidbody m_Shell;                   // Prefab of the shell.
         public Transform m_FireTransform;           // A child of the tank where the shells are spawned.
+        public Transform m_FireVFX;           // A child of the tank where the sparkles are spawned.
         public Slider m_AimSlider;                  // A child of the tank that displays the current launch force.
         public AudioSource m_ShootingAudio;         // Reference to the audio source used to play the shooting audio. NB: different to the movement audio source.
         public AudioClip m_ChargingClip;            // Audio that plays when each shot is charging up.
@@ -27,6 +29,7 @@ namespace Tanks.Complete
         public float m_ExplosionForce = 1000f;              // The amount of force added to a tank at the centre of the explosion.
         [Tooltip("The radius of the explosion in Unity unit. Force decrease with distance to the center, and an tank further than this from the shell explosion won't be impacted by the explosion")]
         public float m_ExplosionRadius = 5f;                // The maximum distance away from the explosion tanks can be and are still affected.
+        public GameObject _sparkVFX;
 
         [HideInInspector]
         public TankInputUser m_InputUser;           // The Input User component for that tanks. Contains the Input Actions. 
@@ -197,6 +200,8 @@ namespace Tanks.Complete
         {
             // Set the fired flag so only Fire is only called once.
             m_Fired = true;
+
+            Instantiate(_sparkVFX, m_FireVFX.position, Quaternion.identity);
 
             // Create an instance of the shell and store a reference to it's rigidbody.
             Rigidbody shellInstance =
