@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using Unity.VisualScripting;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Tanks.Complete
@@ -14,11 +16,12 @@ namespace Tanks.Complete
         [HideInInspector] public bool m_HasShield;          // Has the tank picked up a shield power up?
         
         
-        private AudioSource m_ExplosionAudio;               // The audio source to play when the tank explodes.
         private float m_CurrentHealth;                      // How much health the tank currently has.
         private bool m_Dead;                                // Has the tank been reduced beyond zero health yet?
         private float m_ShieldValue;                        // Percentage of reduced damage when the tank has a shield.
         private bool m_IsInvincible;                        // Is the tank invincible in this moment?
+
+        public static event Action<GameObject> OnPlayerHit;
 
         private void Awake ()
         {
@@ -49,11 +52,14 @@ namespace Tanks.Complete
             // Check if the tank is not invincible
             if (!m_IsInvincible)
             {
+
                 // Reduce current health by the amount of damage done.
                 m_CurrentHealth -= amount * (1 - m_ShieldValue);
 
+                OnPlayerHit?.Invoke(gameObject);
+
                 // Change the UI elements appropriately.
-                SetHealthUI ();
+                SetHealthUI();
 
                 // If the current health is at or below zero and it has not yet been registered, call OnDeath.
                 if (m_CurrentHealth <= 0f && !m_Dead)
@@ -119,6 +125,8 @@ namespace Tanks.Complete
         {
             // Set the flag so that this function is only called once.
             m_Dead = true;
+            Vector3 pos = new Vector3(transform.position.x, transform.position.y + 1, transform.position.z);
+            Instantiate(m_ExplosionPrefab, pos, Quaternion.identity);
 
             // Turn the tank off.
             gameObject.SetActive (false);
