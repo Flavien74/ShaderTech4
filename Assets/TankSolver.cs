@@ -29,6 +29,7 @@ public class TankSolver : MonoBehaviour
     private List<Material> _mat = new List<Material>();
 
     private TankMovement _movement;
+
     void Start()
     {
         TankHealth.OnPlayerHit += HandlePlayerHit;
@@ -86,9 +87,14 @@ public class TankSolver : MonoBehaviour
     }
     private void HandlePlayerDeath()
     {
+        Debug.Log("test");
         foreach (var go in _coloredElements)
         {
+            if (go == null) continue;
+
             Renderer _rend = go.GetComponent<Renderer>();
+
+            if (_rend == null) continue;
 
             int matCount = _rend.materials.Length;
             Material[] newMats = new Material[matCount];
