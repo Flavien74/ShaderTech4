@@ -23,12 +23,18 @@ public class TankSolver : MonoBehaviour
     [SerializeField]
     private Material _baseMaterial;
 
+    [SerializeField]
+    private Material _hitOnScreenMaterial;
+
     private List<Material> _mat = new List<Material>();
 
-
+    private TankMovement _movement;
     void Start()
     {
         TankHealth.OnPlayerHit += HandlePlayerHit;
+        TankHealth.OnPlayerDeath += HandlePlayerDeath;
+
+        _movement = GetComponent<TankMovement>();
 
         foreach (var go in _allElements)
         {
@@ -37,29 +43,6 @@ public class TankSolver : MonoBehaviour
             {
                 _mat.Add(mat);
                 mat.SetFloat("_DisolveAmount", 1);
-            }
-        }
-
-        foreach (var go in _coloredElements)
-        {
-            if (go == null) continue;
-
-            Renderer _rend = go.GetComponent<Renderer>();
-            if (_rend == null) continue;
-
-            int matCount = _rend.materials.Length;
-            Material[] newMats = new Material[matCount];
-
-            for (int i = 0; i < matCount; i++)
-            {
-                newMats[i] = _baseMaterial;
-            }
-
-            _rend.materials = newMats;
-
-            foreach (var mat in newMats)
-            {
-                StartCoroutine(Blink(mat));
             }
         }
 
@@ -74,6 +57,10 @@ public class TankSolver : MonoBehaviour
             return;
         }
 
+        if (!_movement.m_IsComputerControlled)
+        {
+            StartCoroutine(Blink(_hitOnScreenMaterial, "_VignettePower",8,1.5f,false));
+        }
         foreach (var go in _coloredElements)
         {
             if (go == null) continue;
@@ -93,11 +80,27 @@ public class TankSolver : MonoBehaviour
 
             foreach (var mat in newMats)
             {
-                StartCoroutine(Blink(mat));
+                StartCoroutine(Blink(mat, "_Transparency",1,0,true));
             }
         }    
     }
+    private void HandlePlayerDeath()
+    {
+        foreach (var go in _coloredElements)
+        {
+            Renderer _rend = go.GetComponent<Renderer>();
 
+            int matCount = _rend.materials.Length;
+            Material[] newMats = new Material[matCount];
+
+            for (int i = 0; i < matCount; i++)
+            {
+                newMats[i] = _baseMaterial;
+            }
+
+            _rend.materials = newMats;
+        }
+    }
     private IEnumerator Solve()
     {
         float elapsedTime = 0f;
@@ -115,16 +118,16 @@ public class TankSolver : MonoBehaviour
             yield return null;
         }
     }
-    private IEnumerator Blink(Material mat)
+    private IEnumerator Blink(Material mat,string floatName,float maxValue, float minValue,bool isOnCar)
     {
         float elapsedTime = 0f;
 
         while (elapsedTime < _blinkTime)
         {
             elapsedTime += Time.deltaTime;
-            float lerpTransparency = Mathf.Lerp(0f, 1f, (elapsedTime / _blinkTime));
+            float lerpTransparency = Mathf.Lerp(maxValue, minValue, (elapsedTime / _blinkTime));
 
-            mat.SetFloat("_Transparency", lerpTransparency);
+            mat.SetFloat(floatName, lerpTransparency);
 
             yield return null;
         }
@@ -134,29 +137,33 @@ public class TankSolver : MonoBehaviour
         while (elapsedTime < _blinkTime)
         {
             elapsedTime += Time.deltaTime;
-            float lerpTransparency = Mathf.Lerp(1f, 0f, (elapsedTime / _blinkTime));
+            float lerpTransparency = Mathf.Lerp(minValue, maxValue, (elapsedTime / _blinkTime));
 
-            mat.SetFloat("_Transparency", lerpTransparency);
+            mat.SetFloat(floatName, lerpTransparency);
 
             yield return null;
         }
+        mat.SetFloat(floatName, maxValue);
 
-        foreach (var go in _coloredElements)
+        if (isOnCar)
         {
-            if (go == null) continue;
-
-            Renderer _rend = go.GetComponent<Renderer>();
-            if (_rend == null) continue;
-
-            int matCount = _rend.materials.Length;
-            Material[] newMats = new Material[matCount];
-
-            for (int i = 0; i < matCount; i++)
+            foreach (var go in _coloredElements)
             {
-                newMats[i] = _baseMaterial;
-            }
+                if (go == null) continue;
 
-            _rend.materials = newMats;
+                Renderer _rend = go.GetComponent<Renderer>();
+                if (_rend == null) continue;
+
+                int matCount = _rend.materials.Length;
+                Material[] newMats = new Material[matCount];
+
+                for (int i = 0; i < matCount; i++)
+                {
+                    newMats[i] = _baseMaterial;
+                }
+
+                _rend.materials = newMats;
+            }
         }
     }
 }

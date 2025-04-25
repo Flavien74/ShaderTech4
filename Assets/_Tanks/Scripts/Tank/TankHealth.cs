@@ -22,7 +22,7 @@ namespace Tanks.Complete
         private bool m_IsInvincible;                        // Is the tank invincible in this moment?
 
         public static event Action<GameObject> OnPlayerHit;
-
+        public static event Action OnPlayerDeath;
         private void Awake ()
         {
             // Set the slider max value to the max health the tank can have
@@ -128,6 +128,7 @@ namespace Tanks.Complete
             Vector3 pos = new Vector3(transform.position.x, transform.position.y + 1, transform.position.z);
             Instantiate(m_ExplosionPrefab, pos, Quaternion.identity);
 
+            OnPlayerDeath?.Invoke();
             // Turn the tank off.
             gameObject.SetActive (false);
         }
